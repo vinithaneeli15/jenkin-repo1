@@ -35,7 +35,7 @@ public class AccountServiceImpl implements IAccountService {
 				else
 					return null;
 			}else {
-				throw new InvalidOpeningBalance("Sorry! Invalid Opening Balance Given");
+				throw new InvalidOpeningBalance("Sorry");
 			}
 			
 		}else {
