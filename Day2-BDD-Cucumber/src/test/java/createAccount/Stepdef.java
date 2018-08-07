@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.cap.dao.AccountDao;
 import org.cap.dao.AccountDaoImpl;
+import org.cap.dao.IAccountDao;
 import org.cap.model.Account;
 import org.cap.model.Address;
 import org.cap.model.Customer;
@@ -25,14 +25,22 @@ public class Stepdef {
 	private Customer customer;
 	private double openingBalance;
 	private IAccountService accountService;
+	int accountNo;
+	double amount;
 	@Mock
-	private AccountDao accountDao;
+	private IAccountDao accountDao;
 	@Before
 	public void  setUp() {
 		MockitoAnnotations.initMocks(this);
 		customer= new Customer();
+		customer.setFirstName("Tom");
+	    customer.setLastName("Jerry");
+	    Address address=new Address();
+	    address.setDoorNo("11/B");
+	    address.setCity("Chennai");
+	    customer.setAddress(address);
 		openingBalance=1000;
-		//accountDao=new AccountDaoImpl();
+//		accountDao=new AccountDaoImpl();
 		accountService=new AccountServiceImpl(accountDao);
 		
 	}
@@ -60,18 +68,18 @@ public class Stepdef {
 
 	@Then("^create new Account$")
 	public void create_new_Account() throws Throwable {
-		
 		Account account=new Account();
 		account.setAccountNo(1);
 		account.setOpeningBalance(1000);
 		account.setCustomer(customer);
-		Mockito.when(accountDao.addAccount(account)).thenReturn(true);
 		
+		Mockito.when(accountDao.addAccount(account)).thenReturn(true);
 		
 	    Account account2=accountService.createAccount(customer, openingBalance);
 	    Mockito.verify(accountDao).addAccount(account);
+	    
 	    assertNotNull(account2);
-	    assertEquals(openingBalance, account2.getOpeningBalance(),0.0);
+	    assertEquals(account.getOpeningBalance(), account2.getOpeningBalance(),0.0);
 	    assertEquals(1, account2.getAccountNo());
 	}
 	 
@@ -114,5 +122,89 @@ public class Stepdef {
 			   }
 		}	 
 	 
+		@Given("^account number$")
+		public void account_number() throws Throwable {
+		  accountNo=1;
+		}
+
+		@When("^valid Account number$")
+		public void valid_Account_number() throws Throwable {
+		    assertTrue(accountNo>0);
+		}
+
+		@Then("^find account details$")
+		public void find_account_details() throws Throwable {
+			Account account=new Account();
+			account.setAccountNo(1);
+			account.setOpeningBalance(1000);
+			account.setCustomer(customer);
+			
+			Mockito.when(accountDao.findAccountById(accountNo)).thenReturn(account);
+		  
+			Account account2=accountService.findAccountById(accountNo);
+			
+			 Mockito.verify(accountDao).findAccountById(accountNo);
+			assertEquals(account.getAccountNo(), account2.getAccountNo());
+			 assertEquals(account.getOpeningBalance(), account2.getOpeningBalance(),0.0);
+		}
+		
+		@Given("^account number (\\d+) and amount (\\d+)$")
+		public void account_number_and_amount(int accNo, int amount) throws Throwable {
+		 this.accountNo=accNo;
+		 this.amount=amount;
+		}
+
+		@When("^Find Account and do withdraw$")
+		public void find_Account_and_do_withdraw() throws Throwable {
+			Account account=new Account();
+			account.setAccountNo(1);
+			account.setOpeningBalance(1000);
+			account.setCustomer(customer);
+			Mockito.times(2);
+			Mockito.when(accountDao.findAccountById(accountNo)).thenReturn(account);
+			Mockito.when(accountDao.updateAccount(accountNo, 900)).thenReturn(account);
+			
+			Account account2=accountService.withdraw(accountNo,amount);
+			Mockito.verify(accountDao).findAccountById(accountNo);
+			Mockito.verify(accountDao).updateAccount(accountNo, 900);
+			System.out.println(account);
+			System.out.println(account2);
+		    assertNotNull(account2);
+		    assertEquals(account.getAccountNo(), account2.getAccountNo());
+		    assertEquals(account.getOpeningBalance(), account2.getOpeningBalance(),0.0);
+		   
+		}
+
+		@Then("^update the account details$")
+		public void update_the_account_details() throws Throwable {
+			Account account=new Account();
+			account.setAccountNo(1);
+			account.setOpeningBalance(900);
+			account.setCustomer(customer);
+						
+			Mockito.when(accountDao.updateAccount(accountNo, 900)).thenReturn(account);
+			Account updatedAccount=accountService.updateAccount(accountNo, 900);
+//			Mockito.verify(accountDao).updateAccount(accountNo, 900);
+			 assertEquals(900, updatedAccount.getOpeningBalance(),0.0);
+		}
+		@When("^Find Account and do deposit$")
+		public void find_Account_and_do_deposit() throws Throwable {
+			Account account=new Account();
+			account.setAccountNo(1);
+			account.setOpeningBalance(1000);
+			account.setCustomer(customer);
+			Mockito.times(2);
+			Mockito.when(accountDao.findAccountById(accountNo)).thenReturn(account);
+			Mockito.when(accountDao.updateAccount(accountNo, 1100)).thenReturn(account);
+			
+			Account account2=accountService.deposit(accountNo,amount);
+			Mockito.verify(accountDao).findAccountById(accountNo);
+			Mockito.verify(accountDao).updateAccount(accountNo, 1100);
+			System.out.println(account);
+			System.out.println(account2);
+		    assertNotNull(account2);
+		    assertEquals(account.getAccountNo(), account2.getAccountNo());
+		    assertEquals(account.getOpeningBalance(), account2.getOpeningBalance(),0.0);
+		}
 
 }

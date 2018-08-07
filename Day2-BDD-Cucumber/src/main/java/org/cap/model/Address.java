@@ -4,8 +4,32 @@ public class Address {
 private String doorNo;
 
 private String city;
+public Address() {
+	super();
+}
+public Address(String doorNo, String street, String city) {
+	super();
+	this.doorNo = doorNo;
+	
+	this.city = city;
+}
+@Override
+public String toString() {
+	return "Address [doorNo=" + doorNo + ", city=" + city + "]";
+}
+public String getDoorNo() {
+	return doorNo;
+}
+public void setDoorNo(String doorNo) {
+	this.doorNo = doorNo;
+}
 
-
+public String getCity() {
+	return city;
+}
+public void setCity(String city) {
+	this.city = city;
+}
 @Override
 public int hashCode() {
 	final int prime = 31;
@@ -34,32 +58,6 @@ public boolean equals(Object obj) {
 	} else if (!doorNo.equals(other.doorNo))
 		return false;
 	return true;
-}
-public Address() {
-	super();
-}
-public Address(String doorNo, String street, String city) {
-	super();
-	this.doorNo = doorNo;
-	
-	this.city = city;
-}
-@Override
-public String toString() {
-	return "Address [doorNo=" + doorNo + ", city=" + city + "]";
-}
-public String getDoorNo() {
-	return doorNo;
-}
-public void setDoorNo(String doorNo) {
-	this.doorNo = doorNo;
-}
-
-public String getCity() {
-	return city;
-}
-public void setCity(String city) {
-	this.city = city;
 }
 
 }

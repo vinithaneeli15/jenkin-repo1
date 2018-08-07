@@ -6,8 +6,7 @@ Create new Account for the valid customer details
   When  Valid customer
   And   valid opening balance
   Then create new Account
-  
- Scenario: For Invalid customer 
+Scenario: For Invalid customer 
  For Invalid customer details throw error message
   Given Customer details
   When Invalid Customer
@@ -17,10 +16,20 @@ Create new Account for the valid customer details
    Given Customer details and opening balance
    When Invalid opening balance
    Then throw 'Insufficient Balance' error message 
- 
-  #Scenario: creating new savings account
-    #Given customer details
-    #And   valid opening balance
-    #When  Valid customer
-    #And   opening balance is greater than 500
-    #Then create new  Savings Account
+
+   
+	  
+	Scenario: Find account details 
+   Given account number
+   When valid Account number
+   Then find account details
+   
+	Scenario: Withdraw Amount from account  
+   Given account number 1 and amount 100
+   When Find Account and do withdraw
+   Then update the account details 
+   
+	Scenario: Deposit Amount from account  
+   Given account number 1 and amount 100
+   When Find Account and do deposit
+   Then update the account details 
