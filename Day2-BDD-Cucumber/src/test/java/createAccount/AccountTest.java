@@ -46,7 +46,7 @@ public void when_invalid_opening_balance_throw_exception() throws InvalidCustome
 	double amount=100;
 	exception.expect(InvalidOpeningBalance.class);
 	exception.expectMessage("Sorry");
-	accountService.createAccount(customer, amount);
+	accountService.createAccount(customer,amount);
 	
 }
 }
